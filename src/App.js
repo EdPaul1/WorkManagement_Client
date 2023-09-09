@@ -1,10 +1,11 @@
 import * as React from 'react'
+import { useEffect , useState } from 'react'
 import lightTheme from './theme/light-theme'
 import darkTheme from './theme/dark-theme'
 
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import Login from './containers/Login'
 import Projects from './containers/Projects'
@@ -15,7 +16,7 @@ import Box from '@mui/material/Box'
 
 const App = () => {
   // handle dark mode
-  const [mode, setMode] = React.useState(true)
+  const [mode, setMode] = useState(true)
   const appliedTheme = createTheme(mode ? lightTheme : darkTheme)
 
   const toggleTheme = () => {
@@ -23,20 +24,20 @@ const App = () => {
   }
 
   // handle projects
-  const [projects, setProjects] = React.useState([])
+  const [projects, setProjects] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchProjects()
   }, [])
 
   const fetchProjects = () => {
-    fetch('/api/projects')
+    fetch('/projects')
       .then((res) => res.json())
       .then((data) => setProjects(data))
   }
 
   const patchProjects = (project) => {
-    fetch(`/api/projects/${project.id}`, {
+    fetch(`/projects/${project.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -51,7 +52,7 @@ const App = () => {
   }
 
   const postProjects = (project) => {
-    fetch('/api/projects/', {
+    fetch('/projects/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -72,7 +73,7 @@ const App = () => {
       (project) => project.id !== deleteProject.id
     )
 
-    fetch(`/api/projects/${deleteProject.id}`, {
+    fetch(`/projects/${deleteProject.id}`, {
       method: 'DELETE',
     })
 
@@ -99,48 +100,42 @@ const App = () => {
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <Router>
-          <Layout
-            toggleTheme={toggleTheme}
-            mode={mode}
-            projects={projects}
-            search={search}
-            setSearch={setSearch}
-            fetchProjects={fetchProjects}>
-            <Route
-              exact
-              path='/'
-              render={(routerProps) => <Login {...routerProps} />}
-            />
-            <Route
-              exact
-              path='/projects'
-              render={(routerProps) => (
-                <Projects
-                  {...routerProps}
-                  projects={filterProjects}
-                  mode={mode}
-                  patchProjects={patchProjects}
-                  postProjects={postProjects}
-                  handleUpdatingProject={handleUpdatingProject}
-                  handleDeleteProject={handleDeleteProject}
+            <Layout
+              toggleTheme={toggleTheme}
+              mode={mode}
+              projects={projects}
+              search={search}
+              setSearch={setSearch}
+              fetchProjects={fetchProjects}
+            >
+              <Routes>
+                <Route path="/" element={<Login />} />
+                <Route
+                  path="/projects"
+                  element={
+                    <Projects
+                      projects={filterProjects}
+                      mode={mode}
+                      patchProjects={patchProjects}
+                      postProjects={postProjects}
+                      handleUpdatingProject={handleUpdatingProject}
+                      handleDeleteProject={handleDeleteProject}
+                    />
+                  }
                 />
-              )}
-            />
-            <Route
-              exact
-              path='/projects/:id'
-              render={(routerProps) => (
-                <ProjectDashboard
-                  {...routerProps}
-                  mode={mode}
-                  handleUpdatingProject={handleUpdatingProject}
-                  
-                  handleDeleteProject={handleDeleteProject}
+                <Route
+                  path="/projects/:id"
+                  element={
+                    <ProjectDashboard
+                      mode={mode}
+                      handleUpdatingProject={handleUpdatingProject}
+                      handleDeleteProject={handleDeleteProject}
+                    />
+                  }
                 />
-              )}
-            />
-          </Layout>
-        </Router>
+              </Routes>
+            </Layout>
+          </Router>
       </Box>
     </ThemeProvider>
   )
