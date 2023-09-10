@@ -90,10 +90,12 @@ const App = () => {
   }
 
   //handle search
+  // console.log(projects)
   const [search, setSearch] = React.useState('')
   const filterProjects = projects.filter((project) => {
-    return project.title.toLowerCase().includes(search.toLowerCase())
-  })
+    return project && project.title && project.title.toLowerCase().includes(search.toLowerCase());
+  });
+  
 
   return (
     <ThemeProvider theme={appliedTheme}>
