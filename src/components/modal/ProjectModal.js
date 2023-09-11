@@ -34,6 +34,8 @@ const ProjectModal = ({
             handleUpdatingProject(updatedProject)
         }else {
             const newProject = { title: title, color: color }
+            console.log(title)
+            console.log(color)
             postProjects(newProject)
             setTitle('')
             setColor('')
@@ -70,6 +72,8 @@ const ProjectModal = ({
                             labelName='Project Title'
                         />
                     <ColorPicker colors={palette} color={color} setColor={setColor} />
+
+
 
                     <SaveButton title={project ? 'Save Project' : 'Create Project'} />
                 </form>

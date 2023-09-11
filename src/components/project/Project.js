@@ -26,8 +26,6 @@ const Project = ({
   handleDeleteProject,
 }) => {
   // handle progress bar
-  // console.log(project.boards);
-  // console.log(boards.tasks)
   const tasks = project.boards.flatMap((board) => board.tasks);
 
 
@@ -37,7 +35,7 @@ const Project = ({
       ? 0
       : (completedTasks.length / tasks.length) * 100
 
-  const currentColorScheme = ProjectColors(project)
+  const currentColorScheme = ProjectColors(project);
 
   //menu to see more options
   const [moreAnchorEl, setMoreAnchorEl] = React.useState(null)
